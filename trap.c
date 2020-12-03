@@ -14,6 +14,9 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
+//declare mappages
+int mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
+
 void
 tvinit(void)
 {
@@ -86,6 +89,18 @@ trap(struct trapframe *tf)
               tf->trapno, cpuid(), tf->eip, rcr2());
       panic("trap");
     }
+
+    //add some code from here
+    if(tf->trapno == T_PGFLT){
+      uint va = rcr2();
+      uint sz = PGROUNDDOWN(va); 
+      cprintf( "T_PGFLT:%x\n",va);
+      if((sz = allocuvm(myproc()->pgdir, sz, sz + PGSIZE)) == 0)
+        panic("trap T_PGFLT");  
+      break;
+
+    }
+
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "
             "eip 0x%x addr 0x%x--kill proc\n",
