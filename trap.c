@@ -58,6 +58,22 @@ trap(struct trapframe *tf)
       release(&tickslock);
     }
     lapiceoi();
+
+    if(myproc()!=0 && (tf->cs & 3) == 3){
+      // debug
+      // cprintf("\n");
+      // cprintf("%eip:0x%x    %esp:0x%x\n",tf->eip,tf->esp);
+      // cprintf("%eax:%x\n",tf->eax);
+      myproc()->currentalarmtick++;
+      if(myproc()->currentalarmtick == myproc()->alarmticks){
+        myproc()->currentalarmtick = 0;
+      }
+
+      // push esp in stack
+      tf->esp -= 4;
+      *((uint *)(tf->esp)) = tf->eip;
+      tf->eip = (uint)(myproc()->alarmhandler);
+     }
     break;
   case T_IRQ0 + IRQ_IDE:
     ideintr();
@@ -100,6 +116,7 @@ trap(struct trapframe *tf)
       break;
 
     }
+
 
     // In user space, assume process misbehaved.
     cprintf("pid %d %s: trap %d err %d on cpu %d "
