@@ -82,6 +82,21 @@ argstr(int n, char **pp)
   return fetchstr(addr, pp);
 }
 
+int
+sys_alarm(void)
+{
+  int ticks;
+  void (*handler)();
+
+  if(argint(0, &ticks) < 0)
+    return -1;
+  if(argptr(1, (char**)&handler, 1) < 0)
+    return -1;
+  myproc()->alarmticks = ticks;
+  myproc()->alarmhandler = handler;
+  return 0;
+}
+
 extern int sys_chdir(void);
 extern int sys_close(void);
 extern int sys_dup(void);
@@ -104,6 +119,7 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_date(void);
+extern int sys_alarm(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,12 +143,13 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_date]    sys_date
+[SYS_date]    sys_date,
+[SYS_alarm]   sys_alarm,
 };
 
 // static char* syscallNames[] = {"","fork", "exit", "wait", "pipe", "read",
 // "kill","exec", "fstat", "chdir", "dup", "getpid", "sbrk", "sleep", "uptime",
-// "open", "write", "mknod", "unlink", "link", "mkdir", "close", "date"};
+// "open", "write", "mknod", "unlink", "link", "mkdir", "close", "date", "alarm"};
 
 
 void

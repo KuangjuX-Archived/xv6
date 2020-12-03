@@ -50,10 +50,10 @@ sys_sbrk(void)
 
   if(argint(0, &n) < 0)
     return -1;
-  // addr = myproc()->sz;
-  // if(growproc(n) < 0)
-  //   return -1;
-  addr = myproc()->sz += n;
+  addr = myproc()->sz;
+  if(growproc(n) < 0)
+    return -1;
+  //addr = myproc()->sz += n;
   return addr;
 }
 
@@ -99,3 +99,4 @@ sys_date(struct rtcdate* r)
   cmostime(r);  //从cmos中获取时间
   return 0;
 }
+
