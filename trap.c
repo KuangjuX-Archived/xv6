@@ -69,7 +69,7 @@ trap(struct trapframe *tf)
         myproc()->currentalarmtick = 0;
       }
 
-      // push esp in stack
+      // push %esp into stack
       tf->esp -= 4;
       *((uint *)(tf->esp)) = tf->eip;
       tf->eip = (uint)(myproc()->alarmhandler);
