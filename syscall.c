@@ -218,6 +218,9 @@ syscall(void)
     int arg, res, i = 0, nums = syscallArgs[num]; 
     res = argint(i, &arg);
     cprintf("args: ");
+    if(nums == 0){
+      cprintf("No Arguments");
+    }
     while(nums >= 1 && res >= 0){
         cprintf("0x%x ", arg);
         res = argint(i++, &arg);
