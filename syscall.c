@@ -185,12 +185,12 @@ syscall(void)
     curproc->tf->eax = syscalls[num]();
     cprintf("SYSCALL: name: %s --> id: %d\n",syscallNames[num], num);
     // cprintf("args: %d %d %d\n", curproc->tf->esp-4 ,curproc->tf->esp-8, curproc->tf->esp-12);
-    int arg, i = 1; 
-    argint(i, &arg);
+    int arg, res, i = 0; 
+    res = argint(i, &arg);
     cprintf("args: ");
-    while(arg > 0 ){
+    while(res >= 0){
         cprintf("%d ",arg);
-        argint(i++, &arg);
+        res = argint(i++, &arg);
       }
     cprintf("\n");
   
