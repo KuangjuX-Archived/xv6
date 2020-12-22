@@ -199,8 +199,8 @@ static int syscallArgs[] = {
   [SYS_link]    2,
   [SYS_mkdir]   1,
   [SYS_close]   1,
-  [SYS_date]    0,
-  [SYS_alarm]   0,
+  [SYS_date]    1,
+  [SYS_alarm]   2,
   [SYS_dup2]    2
 };
 

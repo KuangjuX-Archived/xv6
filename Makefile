@@ -184,6 +184,7 @@ UPROGS=\
 	_date\
 	_alarmtest\
 	_big\
+	_dup2test\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
