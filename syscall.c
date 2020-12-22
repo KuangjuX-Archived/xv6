@@ -120,6 +120,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_date(void);
 extern int sys_alarm(void);
+extern int sys_dup2(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -145,6 +146,7 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_date]    sys_date,
 [SYS_alarm]   sys_alarm,
+[SYS_dup2]    sys_dup2
 };
 
 
@@ -171,7 +173,35 @@ static char* syscallNames[] = {
   [SYS_mkdir] "mkdir",
   [SYS_close] "close",
   [SYS_date]  "date",
-  [SYS_alarm] "alarm"
+  [SYS_alarm] "alarm",
+  [SYS_dup2]  "dup2"
+};
+
+static int syscallArgs[] = {
+  [SYS_fork]    0,
+  [SYS_exit]    0,
+  [SYS_wait]    0,
+  [SYS_pipe]    1,
+  [SYS_read]    3,
+  [SYS_kill]    1,
+  [SYS_exec]    2,
+  [SYS_fstat]   1,
+  [SYS_chdir]   1,
+  [SYS_dup]     1,
+  [SYS_getpid]  0,
+  [SYS_sbrk]    1,
+  [SYS_sleep]   1,
+  [SYS_uptime]  2,
+  [SYS_open]    2,
+  [SYS_write]   3,
+  [SYS_mknod]   3,
+  [SYS_unlink]  1,
+  [SYS_link]    2,
+  [SYS_mkdir]   1,
+  [SYS_close]   1,
+  [SYS_date]    0,
+  [SYS_alarm]   0,
+  [SYS_dup2]    2
 };
 
 void
@@ -183,14 +213,15 @@ syscall(void)
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
-    cprintf("SYSCALL: name: %s --> id: %d\n",syscallNames[num], num);
+    cprintf("SYSCALL: name: %s --> return value: %d\n",syscallNames[num], curproc->tf->eax);
     // cprintf("args: %d %d %d\n", curproc->tf->esp-4 ,curproc->tf->esp-8, curproc->tf->esp-12);
-    int arg, res, i = 0; 
+    int arg, res, i = 0, nums = syscallArgs[num]; 
     res = argint(i, &arg);
     cprintf("args: ");
-    while(res >= 0){
-        cprintf("%d ",arg);
+    while(nums >= 1 && res >= 0){
+        cprintf("0x%x ", arg);
         res = argint(i++, &arg);
+        nums--;
       }
     cprintf("\n");
   
