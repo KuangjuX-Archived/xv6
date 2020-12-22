@@ -31,3 +31,5 @@ SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(date)
 SYSCALL(alarm)
+SYSCALL(dup2)
+
