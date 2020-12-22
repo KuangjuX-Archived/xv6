@@ -214,16 +214,17 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
     cprintf("SYSCALL: name: %s --> return value: %d\n",syscallNames[num], curproc->tf->eax);
-    // cprintf("args: %d %d %d\n", curproc->tf->esp-4 ,curproc->tf->esp-8, curproc->tf->esp-12);
-    int arg, res, i = 0, nums = syscallArgs[num]; 
-    res = argint(i, &arg);
+    // cprintf("args: 0x%x 0x%x 0x%x 0x%x\n", *((int *)(curproc->tf->esp+4)) ,*((int *)(curproc->tf->esp+8)), *((int *)(curproc->tf->esp+12)), *((int *)(curproc->tf->esp+16)));
+    uint esp = curproc->tf->esp;
+    int nums = syscallArgs[num]; 
+    int i = 1;
     cprintf("args: ");
     if(nums == 0){
       cprintf("No Arguments");
     }
-    while(nums >= 1 && res >= 0){
-        cprintf("0x%x ", arg);
-        res = argint(i++, &arg);
+    while(nums >= 1){
+        cprintf("0x%x ", *((int *)(esp + 4*i)));
+        i++;
         nums--;
       }
     cprintf("\n");
