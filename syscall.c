@@ -148,31 +148,31 @@ static int (*syscalls[])(void) = {
 };
 
 
-// static char* syscallNames[] = {
-//   [SYS_fork]  "fork",
-//   [SYS_exit]  "exit",
-//   [SYS_wait]  "wait",
-//   [SYS_pipe]  "pipe",
-//   [SYS_read]  "read",
-//   [SYS_kill]  "kill",
-//   [SYS_exec]  "exec",
-//   [SYS_fstat] "fstat",
-//   [SYS_chdir] "chdir",
-//   [SYS_dup]   "dup",
-//   [SYS_getpid]"getpid",
-//   [SYS_sbrk]  "sbrk",
-//   [SYS_sleep] "sleep",
-//   [SYS_uptime]"uptime",
-//   [SYS_open]  "open",
-//   [SYS_write] "write",
-//   [SYS_mknod] "mknod",
-//   [SYS_unlink]"unlink",
-//   [SYS_link]  "link",
-//   [SYS_mkdir] "mkdir",
-//   [SYS_close] "close",
-//   [SYS_date]  "date",
-//   [SYS_alarm] "alarm"
-// };
+static char* syscallNames[] = {
+  [SYS_fork]  "fork",
+  [SYS_exit]  "exit",
+  [SYS_wait]  "wait",
+  [SYS_pipe]  "pipe",
+  [SYS_read]  "read",
+  [SYS_kill]  "kill",
+  [SYS_exec]  "exec",
+  [SYS_fstat] "fstat",
+  [SYS_chdir] "chdir",
+  [SYS_dup]   "dup",
+  [SYS_getpid]"getpid",
+  [SYS_sbrk]  "sbrk",
+  [SYS_sleep] "sleep",
+  [SYS_uptime]"uptime",
+  [SYS_open]  "open",
+  [SYS_write] "write",
+  [SYS_mknod] "mknod",
+  [SYS_unlink]"unlink",
+  [SYS_link]  "link",
+  [SYS_mkdir] "mkdir",
+  [SYS_close] "close",
+  [SYS_date]  "date",
+  [SYS_alarm] "alarm"
+};
 
 void
 syscall(void)
@@ -183,7 +183,17 @@ syscall(void)
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
-    //cprintf("\tSYS_CALL: %s\t id: %d\n",syscallNames[num],num);
+    cprintf("SYSCALL: name: %s --> id: %d\n",syscallNames[num], num);
+    // cprintf("args: %d %d %d\n", curproc->tf->esp-4 ,curproc->tf->esp-8, curproc->tf->esp-12);
+    int arg, i = 1; 
+    argint(i, &arg);
+    cprintf("args: ");
+    while(arg > 0 ){
+        cprintf("%d ",arg);
+        argint(i++, &arg);
+      }
+    cprintf("\n");
+  
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
