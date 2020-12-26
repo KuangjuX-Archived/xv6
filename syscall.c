@@ -214,7 +214,6 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->eax = syscalls[num]();
     cprintf("SYSCALL: name: %s --> return value: %d\n",syscallNames[num], curproc->tf->eax);
-    // cprintf("args: 0x%x 0x%x 0x%x 0x%x\n", *((int *)(curproc->tf->esp+4)) ,*((int *)(curproc->tf->esp+8)), *((int *)(curproc->tf->esp+12)), *((int *)(curproc->tf->esp+16)));
     uint esp = curproc->tf->esp;
     int nums = syscallArgs[num]; 
     int i = 1;
